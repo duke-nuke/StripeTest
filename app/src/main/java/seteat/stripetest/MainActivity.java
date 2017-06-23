@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         String tokId = token.getId();
 
         final Map<String, Object> chargeParams = new HashMap<String, Object>();
-        chargeParams.put("amount", 10);
+        chargeParams.put("amount", 100);
         chargeParams.put("currency", "usd");
         chargeParams.put("description", "Example charge from Android");
         chargeParams.put("source", tokId);
