@@ -1,11 +1,14 @@
 package seteat.stripetest;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.stripe.android.Stripe;
 import com.stripe.android.TokenCallback;
@@ -20,7 +23,6 @@ import com.stripe.model.Charge;
 
 import java.util.HashMap;
 import java.util.Map;
-
 
 
 public class MainActivity extends AppCompatActivity {
@@ -62,52 +64,71 @@ public class MainActivity extends AppCompatActivity {
                 Integer.valueOf(year.getText().toString()),
                 cvc.getText().toString()
         );
-        if(!card.validateCard()) {
+
+        if(card.validateCard()) {
+
+            Context mContext = this;
+            Stripe stripe = new Stripe(mContext, "pk_test_qvzr6qG9nIaLtsX5IHaFglKt");
+
+            stripe.createToken(
+                    card,
+                    new TokenCallback() {
+                        public void onSuccess(Token token) {
+                            //Token successfully created.
+                            //Create a charge or save token to the server and use it later
+                            startNewCharge(token);
+                        }
+                        public void onError(Exception error) {
+                            // Show localized error message
+                            Toast.makeText(getApplicationContext(),
+                                    "ERROR ON CREATING TOKEN",
+                                    Toast.LENGTH_LONG
+                            ).show();
+                        }
+                    }
+            );
+        } else {
             indicateLabel.setText("Card Invalid");
         }
-
-        Context mContext = this;
-
-        Stripe stripe = new Stripe(mContext, "pk_test_qvzr6qG9nIaLtsX5IHaFglKt");
-        stripe.createToken(
-                card,
-                new TokenCallback() {
-                    public void onSuccess(Token token) {
-                        chargeClient(token);
-                    }
-                    public void onError(Exception error) {
-                        error.printStackTrace();
-                    }
-                }
-        );
     }
 
 
-    public void chargeClient(Token token) {
-        // set secret key
-        com.stripe.Stripe.apiKey = "sk_test_YRlSvwxgUo0ZPkSn3RVxYyp7";
+    public void startNewCharge(Token token) {
 
         String tokId = token.getId();
 
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("amount", 10);
-        params.put("currency", "usd");
-        params.put("description", "Example charge from Android");
-        params.put("source", tokId);
+        final Map<String, Object> chargeParams = new HashMap<String, Object>();
+        chargeParams.put("amount", 10);
+        chargeParams.put("currency", "usd");
+        chargeParams.put("description", "Example charge from Android");
+        chargeParams.put("source", tokId);
 
-        try {
-            Charge charge = Charge.create(params);
-        } catch (AuthenticationException e) {
-            e.printStackTrace();
-        } catch (InvalidRequestException e) {
-            e.printStackTrace();
-        } catch (APIConnectionException e) {
-            e.printStackTrace();
-        } catch (CardException e) {
-            e.printStackTrace();
-        } catch (APIException e) {
-            e.printStackTrace();
-        }
+
+
+        new AsyncTask<Void, Void, Void>() {
+
+            Charge charge;
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    com.stripe.Stripe.apiKey = "sk_test_YRlSvwxgUo0ZPkSn3RVxYyp7";
+
+                    charge = Charge.create(chargeParams);
+
+                    Log.i("IsCharged", charge.getCreated().toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            protected void onPostExecute(Void result) {
+
+                Toast.makeText(getApplicationContext(), "Card Charged : " + charge.getCreated() + "\nPaid : " +charge.getPaid(), Toast.LENGTH_LONG).show();
+            };
+
+        }.execute();
 
     }
 

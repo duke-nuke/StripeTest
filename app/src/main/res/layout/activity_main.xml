@@ -18,33 +18,36 @@
 
 
         <EditText
+            android:id="@+id/cardNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/cardNumber"
-            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="4242424242424242" />
 
         <EditText
+            android:id="@+id/month"
             android:layout_width="30dp"
             android:layout_height="wrap_content"
-            android:inputType="number"
-            android:ems="10"
-            android:id="@+id/month"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/cardNumber"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:ems="10"
+            android:inputType="number"
+            android:text="12" />
 
         <EditText
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:ems="10"
             android:id="@+id/year"
-            android:layout_below="@+id/cardNumber"
-            android:layout_toRightOf="@+id/textView" />
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            android:text="18"
+            android:layout_alignBaseline="@+id/textView"
+            android:layout_alignBottom="@+id/textView"
+            android:layout_toEndOf="@+id/textView" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -57,14 +60,14 @@
             android:layout_toEndOf="@+id/month" />
 
         <EditText
+            android:id="@+id/cvc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/cvc"
-            android:layout_below="@+id/cardNumber"
-            android:layout_toRightOf="@+id/year"
-            android:layout_toEndOf="@+id/year"
             android:layout_marginLeft="49dp"
-            android:layout_marginStart="49dp" />
+            android:layout_marginStart="49dp"
+            android:text="123"
+            android:layout_below="@+id/cardNumber"
+            android:layout_toEndOf="@+id/year" />
 
         <Button
             android:layout_width="wrap_content"
